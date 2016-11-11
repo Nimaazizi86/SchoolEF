@@ -18,17 +18,22 @@ namespace SchoolWebEFNimaV2.Controllers
         // GET: Courses
         public ActionResult Index()
         {
-            return View(db.Courses.ToList());
+            var Courses = db.Courses.Include(o => o.Teacher);
+            return View(Courses.ToList());
         }
 
         // GET: Courses/Details/5
         public ActionResult Details(int? id)
         {
+            //var _courses = db.Courses.Include(p => p.Teacher);
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
+            
+            Course course = db.Courses.Include(i => i.Teacher).Include(j => j.Students).SingleOrDefault(x => x.CourseID == id);
+
             if (course == null)
             {
                 return HttpNotFound();
@@ -36,75 +41,54 @@ namespace SchoolWebEFNimaV2.Controllers
             return View(course);
         }
 
-        //// GET: Courses/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
 
-        //// POST: Courses/Create
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "CourseID,CourseName,StartDate,EndDate")] Course course)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Courses.Add(course);
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    return View(course);
-        //}
 
         // GET: Home/Create
         public ActionResult Create()
         {
-            //ViewBag.TeachersAdd = new SelectList(db.Teachers, "TeacherID", "TeacherName" , "TeacherLastName");
-            PopulateTeachersDropDownList();
+            ViewBag.TeacherId = new SelectList(db.Teachers, "TeacherID", "TeacherName", "TeacherLastName");
+            //PopulateTeachersDropDownList();
 
             return View();
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "CourseID,CourseName,StartDate,EndDate,Teacher")] Course course)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Courses.Add(course);
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewBag.DetailInfoId = new SelectList(db.Teachers, "TeacherID", "TeacherName", "TeacherLastName", course.Teacher);
-        //    return View(course);
-        //}
-
-        //*****************test*********************
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CourseID,CourseName,StartDate,EndDate,Teacher")]Course course)
+        public ActionResult Create([Bind(Include = "CourseID,CourseName,StartDate,EndDate,TeacherId")] Course course)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    db.Courses.Add(course);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
+                db.Courses.Add(course);
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            }
-            PopulateTeachersDropDownList(course.Teacher);
+            ViewBag.TeacherId = new SelectList(db.Teachers, "TeacherID", "TeacherLastName", course.TeacherId);
             return View(course);
         }
-        //******************************************
+
+        ////*****************test*********************
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create([Bind(Include = "CourseID,CourseName,StartDate,EndDate,Teacher")]Course course)
+        //{
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            db.Courses.Add(course);
+        //            db.SaveChanges();
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    catch (RetryLimitExceededException /* dex */)
+        //    {
+        //        //Log the error (uncomment dex variable name and add a line here to write a log.)
+        //        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+        //    }
+        //    PopulateTeachersDropDownList(course.Teacher);
+        //    return View(course);
+        //}
+        ////******************************************
 
 
 
@@ -176,13 +160,13 @@ namespace SchoolWebEFNimaV2.Controllers
         }
 
 
-        private void PopulateTeachersDropDownList(object selectedTeacher = null)
-        {
-            var teachersQuery = from d in db.Teachers
-                                orderby d.TeacherName
-                                select d;
-            ViewBag.TeacherID = new SelectList(teachersQuery, "TeacherID", "TeacherLastName", selectedTeacher);
-        }
+        //private void PopulateTeachersDropDownList(object selectedTeacher = null)
+        //{
+        //    var teachersQuery = from d in db.Teachers
+        //                        orderby d.TeacherName
+        //                        select d;
+        //    ViewBag.TeacherID = new SelectList(teachersQuery, "TeacherID", "TeacherLastName", selectedTeacher);
+        //}
 
     }
 }

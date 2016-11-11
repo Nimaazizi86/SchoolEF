@@ -17,7 +17,8 @@ namespace SchoolWebEFNimaV2.Controllers
         // GET: Students
         public ActionResult Index()
         {
-            return View(db.Students.ToList());
+            var Students = db.Students.Include(o => o.Courses);
+            return View(Students.ToList());
         }
 
         // GET: Students/Details/5
@@ -27,7 +28,7 @@ namespace SchoolWebEFNimaV2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = db.Students.Find(id);
+            Student student = db.Students.Include(i => i.Courses).SingleOrDefault(x => x.StudentID == id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -38,6 +39,7 @@ namespace SchoolWebEFNimaV2.Controllers
         // GET: Students/Create
         public ActionResult Create()
         {
+            ViewBag.CourseId = new SelectList(db.Courses, "CourseID", "CourseName", "StartDate", "EndDate", "TeacherId" );
             return View();
         }
 
@@ -46,14 +48,17 @@ namespace SchoolWebEFNimaV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "StudentID,StudentFirstName,StudentLastName")] Student student)
+        public ActionResult Create([Bind(Include = "StudentID,StudentFirstName,StudentLastName,CourseId")] Student student,string coursename)
         {
             if (ModelState.IsValid)
             {
+
                 db.Students.Add(student);
                 db.SaveChanges();
                 return RedirectToAction("Index");
+
             }
+            ViewBag.CourseId = new SelectList(db.Courses, "CourseID", "CourseName", student.CourseId);
 
             return View(student);
         }

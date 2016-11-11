@@ -29,9 +29,9 @@ namespace SchoolWebEFNimaV2.Migrations
 
             context.Students.AddOrUpdate(
               p => p.StudentFirstName,
-              new Student { StudentFirstName = "Nima", StudentLastName ="Azizi" },
-              new Student { StudentFirstName = "Davis", StudentLastName = "Davissss" },
-              new Student { StudentFirstName = "Marcus", StudentLastName = "MArcusss" }
+              new Student { StudentFirstName = "Nima", StudentLastName ="Azizi", CourseId=1 },
+              new Student { StudentFirstName = "Davis", StudentLastName = "Davissss", CourseId = 3 },
+              new Student { StudentFirstName = "Marcus", StudentLastName = "MArcusss", CourseId = 4 }
             );
 
             context.Assignments.AddOrUpdate(
@@ -43,9 +43,9 @@ namespace SchoolWebEFNimaV2.Migrations
 
             context.Courses.AddOrUpdate(
               p => p.CourseName,
-              new Course { CourseName = "C#", StartDate = new DateTime(2016, 6, 10), EndDate = new DateTime(2016, 12, 10) },
-              new Course { CourseName = ".Net", StartDate = new DateTime(2016, 6, 10), EndDate = new DateTime(2016, 12, 10) },
-              new Course { CourseName = "SQL", StartDate = new DateTime(2016, 6, 10), EndDate = new DateTime(2016, 12, 10) }
+              new Course { CourseName = "C#", StartDate = new DateTime(2016, 6, 10), EndDate = new DateTime(2016, 12, 10), TeacherId=1},
+              new Course { CourseName = ".Net", StartDate = new DateTime(2016, 6, 10), EndDate = new DateTime(2016, 12, 10), TeacherId = 3 },
+              new Course { CourseName = "SQL", StartDate = new DateTime(2016, 6, 10), EndDate = new DateTime(2016, 12, 10), TeacherId = 2 }
             );
         }
     }

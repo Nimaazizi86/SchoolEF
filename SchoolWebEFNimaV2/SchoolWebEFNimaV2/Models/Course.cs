@@ -20,7 +20,7 @@ namespace SchoolWebEFNimaV2.Models
         public int? TeacherId { get; set; }
         public Teacher Teacher { get; set; }
 
-        public List<Assignment> Assignments { get; set; }
-        public List<Student> Students { get; set; }
+        public virtual List<Assignment> Assignments { get; set; }
+        public virtual List<Student> Students { get; set; }
     }
 }

@@ -16,8 +16,8 @@ namespace SchoolWebEFNimaV2.Models
         [Required]
         public string TeacherLastName { get; set; }
 
-        public List<Course> Courses { get; set; }
-        public List<Assignment> Assignments { get; set; }
+        public virtual List<Course> Courses { get; set; }
+        public virtual List<Assignment> Assignments { get; set; }
 
     }
 }

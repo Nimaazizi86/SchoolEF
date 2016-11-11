@@ -21,7 +21,7 @@ namespace SchoolWebEFNimaV2.Models
         public Course RelatedCourse { get; set; }
 
         public int? TeacherId { get; set; }
-        public Teacher RelatedTeacher { get; set; }
+        public virtual Teacher RelatedTeacher { get; set; }
 
     }
 }

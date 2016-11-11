@@ -1,6 +1,6 @@
-﻿@using SchoolWebEFNimaV2.Models
+﻿
+@using SchoolWebEFNimaV2.Models
 @model Course
-@model Teacher
 
 @{
     ViewBag.Title = "Details";
@@ -42,8 +42,40 @@
         <dd>
             @Html.DisplayFor(model => model.TeacherId)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Teacher.TeacherLastName)
+        </dt>
 
+        <dd>
+            @Html.DisplayFor(model => model.Teacher.TeacherLastName)
+        </dd>
     </dl>
+
+
+
+        @if (Model.Students != null && Model.Students.Count > 0)
+            {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <td>First Name</td>
+                        <td>Laste Name</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Student student in Model.Students)
+                {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => student.StudentFirstName)</td>
+                            <td>@Html.DisplayFor(modelItem => student.StudentLastName)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+
+
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.CourseID }) |

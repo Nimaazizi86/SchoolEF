@@ -14,6 +14,10 @@ namespace SchoolWebEFNimaV2.Models
         public string StudentFirstName { get; set; }
         [Required]
         public string StudentLastName { get; set; }
-        public List<Course> Courses { get; set; }
+
+        public int? CourseId { get; set; }
+
+        //public virtual Course courses { get; set; }
+        public virtual List<Course> Courses { get; set; }
     }
 }
