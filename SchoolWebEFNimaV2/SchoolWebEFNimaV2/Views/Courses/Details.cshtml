@@ -52,7 +52,7 @@
     </dl>
 
 
-
+    <h2>Students in This course</h2>
         @if (Model.Students != null && Model.Students.Count > 0)
             {
             <table class="table table-bordered table-striped">
@@ -73,6 +73,30 @@
                 </tbody>
             </table>
         }
+
+    <h2>Assignments for this course</h2>
+    @if (Model.Assignments != null && Model.Assignments.Count > 0)
+            {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>Assignment Title</td>
+                    <td>Upload date</td>
+                    <td>Deadline</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Assignment Assignment in Model.Assignments)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => Assignment.AssignmentName)</td>
+                        <td>@Html.DisplayFor(modelItem => Assignment.UploadDate)</td>
+                        <td>@Html.DisplayFor(modelItem => Assignment.DeadlineDate)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 
 
 

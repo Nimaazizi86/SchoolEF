@@ -1,4 +1,5 @@
-﻿@model SchoolWebEFNimaV2.Models.Teacher
+﻿@using SchoolWebEFNimaV2.Models
+@model Teacher
 
 @{
     ViewBag.Title = "Details";
@@ -27,6 +28,56 @@
         </dd>
 
     </dl>
+
+    @if (Model.Courses != null && Model.Courses.Count > 0)
+    {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>Name</td>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Course course in Model.Courses)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => course.CourseName)</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    }
+
+    <h2>Assignments for this Teacher</h2>
+    @if (Model.Assignments != null && Model.Assignments.Count > 0)
+            {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>Assignment Title</td>
+                    <td>Upload date</td>
+                    <td>Deadline</td>
+                    <td>RelatedCourse</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Assignment Assignment in Model.Assignments)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => Assignment.AssignmentName)</td>
+                        <td>@Html.DisplayFor(modelItem => Assignment.UploadDate)</td>
+                        <td>@Html.DisplayFor(modelItem => Assignment.DeadlineDate)</td>
+                        <td>@Html.DisplayFor(modelItem => Assignment.RelatedCourse.CourseName)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+     
+
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.TeacherID }) |

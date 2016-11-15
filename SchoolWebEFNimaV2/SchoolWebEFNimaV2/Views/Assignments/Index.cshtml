@@ -20,6 +20,12 @@
         <th>
             @Html.DisplayNameFor(model => model.DeadlineDate)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RelatedTeacher)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RelatedCourse)
+        </th>
         <th></th>
     </tr>
 
@@ -33,6 +39,12 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.DeadlineDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RelatedTeacher.TeacherLastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RelatedCourse.CourseName)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.AssignmentID }) |

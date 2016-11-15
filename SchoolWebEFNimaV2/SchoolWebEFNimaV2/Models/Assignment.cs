@@ -18,7 +18,7 @@ namespace SchoolWebEFNimaV2.Models
         public System.DateTime DeadlineDate { get; set; }
 
         public int? CourseId { get; set; }
-        public Course RelatedCourse { get; set; }
+        public virtual Course RelatedCourse { get; set; }
 
         public int? TeacherId { get; set; }
         public virtual Teacher RelatedTeacher { get; set; }

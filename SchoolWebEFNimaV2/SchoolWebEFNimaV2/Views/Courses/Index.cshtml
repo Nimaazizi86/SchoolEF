@@ -11,6 +11,7 @@
 </p>
 <table class="table">
     <tr>
+        @*by Html.DisplayNameFor we define the name for a variable to get apear on the screen, model is the course table*@
         <th>
             @Html.DisplayNameFor(model => model.CourseName)
         </th>
@@ -25,7 +26,7 @@
         </th>
         <th></th>
     </tr>
-
+    @*create one foreach to get into the items in course table, by Html.DisplayFor we shows the values of the variables*@
 @foreach (var item in Model) {
     <tr>
         <td>
@@ -37,13 +38,16 @@
         <td>
             @Html.DisplayFor(modelItem => item.EndDate)
         </td>
+        @*The teachers lastname variable get inserted to the course table by geeting its value from teachertable*@
         <td>
             @Html.DisplayFor(modelItem => item.Teacher.TeacherLastName)
         </td>
         <td>
+            @*some actoin links and their methods to call and also send the id of the course that is selected to the method*@
             @Html.ActionLink("Edit", "Edit", new { id=item.CourseID }) |
             @Html.ActionLink("Details", "Details", new { id=item.CourseID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.CourseID })
+            @Html.ActionLink("Delete", "Delete", new { id = item.CourseID })|
+            @Html.ActionLink("AddStudents", "AddStudents", new { id = item.CourseID })
         </td>
     </tr>
 }

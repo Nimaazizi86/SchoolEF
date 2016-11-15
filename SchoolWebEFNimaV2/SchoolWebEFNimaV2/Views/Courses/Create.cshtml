@@ -6,6 +6,8 @@
 
 <h2>Create</h2>
 
+
+@*start the form to get the require information to create a new course*@
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
@@ -29,7 +31,7 @@
                 @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
             </div>
         </div>
-
+        @*get the enrty from the user in a normal field in a from*@
         <div class="form-group">
             @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -38,6 +40,8 @@
             </div>
         </div>
 
+
+        @*get the enrty from the user from a dropdownlist in a from*@
         <div class="form-group">
             @Html.LabelFor(model => model.TeacherId, "TeacherId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -46,23 +50,7 @@
             </div>
         </div>
 
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.TeacherId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TeacherId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TeacherId, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
 
-
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.TeacherId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TeacherId", String.Empty)
-                @Html.ValidationMessageFor(model => model.TeacherId)
-            </div>
-        </div>*@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">

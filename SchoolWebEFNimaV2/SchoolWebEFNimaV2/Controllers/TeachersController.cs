@@ -27,7 +27,10 @@ namespace SchoolWebEFNimaV2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Teacher teacher = db.Teachers.Find(id);
+            //Teacher teacher = db.Teachers.Find(id);
+
+            Teacher teacher = db.Teachers.Include(i => i.Courses).Include(j => j.Assignments).SingleOrDefault(x => x.TeacherID == id);
+
             if (teacher == null)
             {
                 return HttpNotFound();

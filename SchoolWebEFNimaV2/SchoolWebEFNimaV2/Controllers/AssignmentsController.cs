@@ -17,7 +17,8 @@ namespace SchoolWebEFNimaV2.Controllers
         // GET: Assignments
         public ActionResult Index()
         {
-            return View(db.Assignments.ToList());
+            var Assignments = db.Assignments.Include(o => o.RelatedCourse).Include(o => o.RelatedTeacher);
+            return View(Assignments.ToList());
         }
 
         // GET: Assignments/Details/5
@@ -27,7 +28,10 @@ namespace SchoolWebEFNimaV2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Assignment assignment = db.Assignments.Find(id);
+            //Assignment assignment = db.Assignments.Find(id);
+
+            Assignment assignment = db.Assignments.Include(i => i.RelatedCourse).Include(j => j.RelatedTeacher).SingleOrDefault(x => x.AssignmentID == id);
+
             if (assignment == null)
             {
                 return HttpNotFound();
@@ -38,23 +42,26 @@ namespace SchoolWebEFNimaV2.Controllers
         // GET: Assignments/Create
         public ActionResult Create()
         {
+            ViewBag.CourseId = new SelectList(db.Courses, "CourseID", "CourseName", "StartDate", "EndDate", "TeacherId");
             return View();
         }
 
-        // POST: Assignments/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AssignmentID,AssignmentName,UploadDate,DeadlineDate")] Assignment assignment)
+        public ActionResult Create([Bind(Include = "AssignmentID,AssignmentName,UploadDate,DeadlineDate,CourseId,TeacherId")] Assignment assignment)
         {
             if (ModelState.IsValid)
             {
+                // I wanted to get access to my teacherId and courseId and from them to the course name and teacherName, since while creating assignment, user decides
+                // which course it should be assign to, it was no problem to get the courseId, but my teacherId was always null, in order to get access to my teacherId 
+                // i had to go to course table and get the id from there, the below lines to the job
+                assignment.TeacherId = db.Courses.SingleOrDefault(c => c.CourseID == assignment.CourseId).TeacherId;
                 db.Assignments.Add(assignment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
+            ViewBag.CourseId = new SelectList(db.Courses, "CourseID", "CourseName", assignment.CourseId);
             return View(assignment);
         }
 
@@ -70,6 +77,7 @@ namespace SchoolWebEFNimaV2.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.CourseId = new SelectList(db.Courses, "CourseID", "CourseName", "StartDate", "EndDate", "TeacherId");
             return View(assignment);
         }
 
@@ -78,7 +86,7 @@ namespace SchoolWebEFNimaV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AssignmentID,AssignmentName,UploadDate,DeadlineDate")] Assignment assignment)
+        public ActionResult Edit([Bind(Include = "AssignmentID,AssignmentName,UploadDate,DeadlineDate,CourseId")] Assignment assignment)
         {
             if (ModelState.IsValid)
             {
@@ -86,6 +94,8 @@ namespace SchoolWebEFNimaV2.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
+            ViewBag.CourseId = new SelectList(db.Courses, "CourseID", "CourseName", assignment.CourseId);
             return View(assignment);
         }
 

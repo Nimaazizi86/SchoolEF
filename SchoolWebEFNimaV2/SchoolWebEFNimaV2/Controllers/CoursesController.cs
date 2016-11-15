@@ -18,79 +18,59 @@ namespace SchoolWebEFNimaV2.Controllers
         // GET: Courses
         public ActionResult Index()
         {
+            // Here i included the teacher table into my courses table by the link that i created earlier in course model
             var Courses = db.Courses.Include(o => o.Teacher);
+            // return the mixed table as a list to view
             return View(Courses.ToList());
         }
 
         // GET: Courses/Details/5
         public ActionResult Details(int? id)
         {
-            //var _courses = db.Courses.Include(p => p.Teacher);
-
+            // to handle null for ID
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
-            Course course = db.Courses.Include(i => i.Teacher).Include(j => j.Students).SingleOrDefault(x => x.CourseID == id);
-
+            // gere we create an isntance of our course model, we include teachers, students and assignments in it, adn connect all of them based on the courses that have the courseId equal to id,
+            // the id gets to the method by the actionlink that we had infront of each row of courses
+            Course course = db.Courses.Include(i => i.Teacher).Include(j => j.Students).Include(k => k.Assignments).SingleOrDefault(x => x.CourseID == id);
+            // to handle null for Course
             if (course == null)
             {
                 return HttpNotFound();
             }
+            // returns the course to the view
             return View(course);
         }
-
-
-
+        
         // GET: Home/Create
         public ActionResult Create()
         {
+            //put the informatoin of the teachers table in viewbag which is called TeacherId, to prepare it for dropdownmenu
             ViewBag.TeacherId = new SelectList(db.Teachers, "TeacherID", "TeacherName", "TeacherLastName");
-            //PopulateTeachersDropDownList();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        // gets the selected teacher and connected to the its related course, The teacherId is important to have here, in order to be 
+        // able to fill it later in ViewBag.TeacherId
         public ActionResult Create([Bind(Include = "CourseID,CourseName,StartDate,EndDate,TeacherId")] Course course)
         {
+            // if all variables are valid then the course will be added to the databse in course table and the changes will be save
             if (ModelState.IsValid)
             {
                 db.Courses.Add(course);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            // the result of the dropdownmune will be presented here in course.TeacherId
             ViewBag.TeacherId = new SelectList(db.Teachers, "TeacherID", "TeacherLastName", course.TeacherId);
+            // returns the course with its new teacherId to view
             return View(course);
         }
-
-        ////*****************test*********************
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "CourseID,CourseName,StartDate,EndDate,Teacher")]Course course)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            db.Courses.Add(course);
-        //            db.SaveChanges();
-        //            return RedirectToAction("Index");
-        //        }
-        //    }
-        //    catch (RetryLimitExceededException /* dex */)
-        //    {
-        //        //Log the error (uncomment dex variable name and add a line here to write a log.)
-        //        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-        //    }
-        //    PopulateTeachersDropDownList(course.Teacher);
-        //    return View(course);
-        //}
-        ////******************************************
-
-
 
 
         // GET: Courses/Edit/5
@@ -105,6 +85,8 @@ namespace SchoolWebEFNimaV2.Controllers
             {
                 return HttpNotFound();
             }
+            // provide a dropdown list, the same way as create method
+            ViewBag.TeacherId = new SelectList(db.Teachers, "TeacherID","TeacherName","TeacherLastName");
             return View(course);
         }
 
@@ -113,7 +95,7 @@ namespace SchoolWebEFNimaV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CourseID,CourseName,StartDate,EndDate")] Course course)
+        public ActionResult Edit([Bind(Include = "CourseID,CourseName,StartDate,EndDate,TeacherID")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -121,6 +103,7 @@ namespace SchoolWebEFNimaV2.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.TeacherId = new SelectList(db.Teachers, "TeacherID", "TeacherLastName", course.TeacherId);
             return View(course);
         }
 
@@ -159,14 +142,41 @@ namespace SchoolWebEFNimaV2.Controllers
             base.Dispose(disposing);
         }
 
+        [HttpGet]
+        public ActionResult AddStudents(int? id) {
 
-        //private void PopulateTeachersDropDownList(object selectedTeacher = null)
-        //{
-        //    var teachersQuery = from d in db.Teachers
-        //                        orderby d.TeacherName
-        //                        select d;
-        //    ViewBag.TeacherID = new SelectList(teachersQuery, "TeacherID", "TeacherLastName", selectedTeacher);
-        //}
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Course course = db.Courses.Find(id);
+            if (course == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.StudentId = new SelectList(db.Students, "StudentID", "StudentLastName");
+            //ViewBag.CourseId = new SelectList(db.Courses, "CourseID", "CourseName");
+            return View(course);
+
+        }
+
+
+        // add student to the courses, the Student id will be selected from dropdown list and the course Id just sent in from the course row 
+        [HttpPost]
+        public ActionResult AddStudents(int StudentId, int CourseId)
+        {
+            // find the course and student base in their Ids
+            Student student = db.Students.Find(StudentId);
+            Course course = db.Courses.Find(CourseId);
+
+            // add the student to the list of students in the course
+            course.Students.Add(student);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
 
     }
 }
